@@ -1,8 +1,16 @@
 import Game from './models/Game.mjs';
 
+let games = [];
+
 function saveGame(game) {
     const key = `game_${game.title.replace(/\s+/g, '_')}`;
     localStorage.setItem(key, JSON.stringify(game));
+    const existingIndex = games.findIndex(g => g.title === game.title);
+    if (existingIndex >= 0) {
+        games[existingIndex] = game;
+    } else {
+        games.push(game);
+    }
     return true;
 }
 
@@ -64,25 +72,36 @@ function importGamesFromJSON(jsonString) {
     return `Imported ${count} games`;
 }
 
+function importFromFile(file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const jsonString = event.target.result;
+        const result = importGamesFromJSON(jsonString);
+        console.log(result);
+    };
+    reader.onerror = function() {
+        console.error('Error reading file');
+    };
+    reader.readAsText(file);
+}
+
+function loadGamesIntoMemory() {
+    games = locateGames();
+    console.log(`Loaded ${games.length} games into memory`);
+}
+
 export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON };
 
-const testGame = new Game(
-    "Concordia",
-    "Mac Gerdts",
-    "Marina Fahrenbach",
-    "PD-Verlag",
-    2013,
-    "2–5",
-    "90 mins",
-    "Medium",
-    "https://boardgamegeek.com/boardgame/124361/concordia",
-    44,
-    9
-);
-
-saveGame(testGame);
-console.log(locateGames());
-console.log(exportGamesAsJSON());
-
-const exampleJson = '[{"title":"Wingspan","designer":"Elizabeth Hargrave","artist":"Beth Sobel, Natalia Rojas, Ana Maria Martinez","publisher":"Stonemaier Games","year":2019,"players":"1–5","time":"40–70 mins","difficulty":"Medium","url":"https://boardgamegeek.com/boardgame/266192/wingspan","playCount":38,"personalRating":7}]';
-console.log(importGamesFromJSON(exampleJson));
+if (typeof window !== 'undefined') {
+    loadGamesIntoMemory();
+    const importInput = document.getElementById('importSource');
+    if (importInput) {
+        importInput.addEventListener('change', function(event) {
+            if (event.target.files.length > 0) {
+                const file = event.target.files[0];
+                importFromFile(file);
+            }
+        });
+    }
+    console.log(`There are currently ${games.length} games in the memory:`, games);
+}
