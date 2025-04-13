@@ -14,11 +14,64 @@
     </head>
     <body>
         <h1>The Greatest Game Record Website Of All Time</h1>
+        <div id="gameContainer"></div>
         <div>
             <label for="importSource">Import JSON File:</label>
             <input type="file" id="importSource" accept=".json">
         </div>
-        <div id="gameContainer"></div>
+        <div class="add-game-container">
+            <h2>Add New Game</h2>
+            <form id="addGameForm">
+              <div class="form-group">
+                <label for="gameTitle">Title:</label>
+                <input type="text" id="gameTitle" required>
+              </div>
+              <div class="form-group">
+                <label for="gameDesigner">Designer:</label>
+                <input type="text" id="gameDesigner" required>
+              </div>
+              <div class="form-group">
+                <label for="gameArtist">Artist:</label>
+                <input type="text" id="gameArtist" required>
+              </div>
+              <div class="form-group">
+                <label for="gamePublisher">Publisher:</label>
+                <input type="text" id="gamePublisher" required>
+              </div>
+              <div class="form-group">
+                <label for="gameYear">Year:</label>
+                <input type="number" id="gameYear" min="1900" max="2100" required>
+              </div>
+              <div class="form-group">
+                <label for="gamePlayers">Players:</label>
+                <input type="text" id="gamePlayers" placeholder="e.g. 2-5" required>
+              </div>
+              <div class="form-group">
+                <label for="gameTime">Play Time:</label>
+                <input type="text" id="gameTime" placeholder="e.g. 60 mins" required>
+              </div>
+              <div class="form-group">
+                <label for="gameDifficulty">Difficulty:</label>
+                <select id="gameDifficulty" required>
+                  <option value="Light">Light</option>
+                  <option value="Medium-Light">Medium-Light</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Medium-Heavy">Medium-Heavy</option>
+                  <option value="Heavy">Heavy</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="gameURL">BoardGameGeek URL:</label>
+                <input type="url" id="gameURL" placeholder="https://boardgamegeek.com/boardgame/...">
+              </div>
+              <div class="form-group">
+                <label for="gameRating">Initial Rating (0-10):</label>
+                <input type="range" id="gameRating" min="0" max="10" value="0">
+                <span id="ratingDisplay">0</span>
+              </div>
+              <button type="submit">Add Game</button>
+            </form>
+          </div>
         <footer>
             <p>
                 The Game Recorder That Records All The Games For A Record
