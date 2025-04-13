@@ -122,11 +122,26 @@ function renderGames() {
                 </div>
             </div>
         `;
+        
+        const playButton = gameDiv.querySelector('.play-button');
+        playButton.addEventListener('click', function() {
+            game.playCount++;
+            gameDiv.querySelector('.play-count-value').textContent = game.playCount;
+            saveGame(game);
+        });
+
+        const ratingSlider = gameDiv.querySelector('.rating-slider');
+        ratingSlider.addEventListener('input', function() {
+            game.personalRating = parseInt(ratingSlider.value);
+            gameDiv.querySelector('.rating-value').textContent = game.personalRating;
+            saveGame(game);
+        });
+        
         container.appendChild(gameDiv);
     }
 }
 
-export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON };
+export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON, games };
 
 if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', function() {
