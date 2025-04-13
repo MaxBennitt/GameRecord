@@ -2,6 +2,11 @@ import Game from './models/Game.mjs';
 
 let games = [];
 
+let currentSort = {
+    field: 'title',
+    ascending: true
+};
+
 function saveGame(game) {
     const key = `game_${game.title.replace(/\s+/g, '_')}`;
     localStorage.setItem(key, JSON.stringify(game));
@@ -89,12 +94,58 @@ function loadGamesIntoMemory() {
     games = locateGames();
 }
 
+function sortGames(gamesArray) {
+    const sortedGames = [...gamesArray];
+    sortedGames.sort((a, b) => {
+        let valueA, valueB;
+        switch (currentSort.field) {
+            case 'title':
+                valueA = a.title.toLowerCase();
+                valueB = b.title.toLowerCase();
+                break;
+            case 'players':
+                valueA = parseInt(a.players.match(/\d+/)[0] || 0);
+                valueB = parseInt(b.players.match(/\d+/)[0] || 0);
+                break;
+            case 'difficulty':
+                const difficultyOrder = {
+                    'Light': 1,
+                    'Medium-Light': 2,
+                    'Medium': 3,
+                    'Medium-Heavy': 4,
+                    'Heavy': 5
+                };
+                valueA = difficultyOrder[a.difficulty] || 0;
+                valueB = difficultyOrder[b.difficulty] || 0;
+                break;
+            case 'playCount':
+                valueA = a.playCount;
+                valueB = b.playCount;
+                break;
+            case 'personalRating':
+                valueA = a.personalRating;
+                valueB = b.personalRating;
+                break;
+            default:
+                valueA = a.title.toLowerCase();
+                valueB = b.title.toLowerCase();
+        }
+        if (currentSort.ascending) {
+            return valueA > valueB ? 1 : -1;
+        } else {
+            return valueA < valueB ? 1 : -1;
+        }
+    });
+    return sortedGames;
+}
+
 function renderGames() {
     const container = document.getElementById('gameContainer');
     container.innerHTML = '';
+    const sortedGames = sortGames(games);
     
-    for (let i = 0; i < games.length; i++) {
-        const game = games[i];
+    for (let i = 0; i < sortedGames.length; i++) {
+        const game = sortedGames[i];
         const gameDiv = document.createElement('div');
         gameDiv.className = 'game-record';
         gameDiv.innerHTML = `
@@ -210,6 +261,29 @@ function setupAddGameForm() {
     }
 }
 
+function setupSorting() {
+    const sortButtons = document.querySelectorAll('.sort-button');
+    
+    sortButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const sortField = this.getAttribute('data-sort');
+            if (currentSort.field === sortField) {
+                currentSort.ascending = !currentSort.ascending;
+            } else {
+                currentSort.field = sortField;
+                currentSort.ascending = true;
+            }
+            sortButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            renderGames();
+        });
+    });
+    const defaultButton = document.querySelector(`.sort-button[data-sort="${currentSort.field}"]`);
+    if (defaultButton) {
+        defaultButton.classList.add('active');
+    }
+}
+
 export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON, deleteGame, games };
 
 if (typeof window !== 'undefined') {
@@ -217,6 +291,7 @@ if (typeof window !== 'undefined') {
         loadGamesIntoMemory();
         renderGames();
         setupAddGameForm();
+        setupSorting();
         const importInput = document.getElementById('importSource');
         if (importInput) {
             importInput.addEventListener('change', function(event) {
