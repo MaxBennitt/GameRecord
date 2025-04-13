@@ -27,6 +27,83 @@ body {
     line-height: 1.6;
 }
 
+div:has(#importSource) {
+    background-color: white;
+    padding: 15px;
+    margin: 20px;
+    border-radius: 5px;
+}
+
+#gameContainer {
+    padding: 20px;
+}
+
+.game-record {
+    background-color: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.game-record h2 {
+    color: green;
+    margin-bottom: 15px;
+}
+
+.game-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.game-information {
+    flex: 2;
+    min-width: 250px;
+}
+
+.game-information p {
+    margin-bottom: 8px;
+}
+
+.game-information a {
+    color: green;
+    text-decoration: none;
+}
+
+.game-information a:hover {
+    text-decoration: underline;
+}
+
+.game-stats {
+    flex: 1;
+    min-width: 200px;
+    border-left: 1px solid #ddd;
+    padding-left: 15px;
+}
+
+.play-counter {
+    margin-bottom: 15px;
+}
+
+.play-button {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.rating-section {
+    margin-top: 15px;
+}
+
+.rating-slider {
+    width: 100%;
+    margin-top: 8px;
+}
+
 footer {
     background-color: green;
     color: white;

@@ -68,7 +68,7 @@ function importGamesFromJSON(jsonString) {
         saveGame(game);
         count++;
     });
-    
+    renderGames();
     return `Imported ${count} games`;
 }
 
@@ -87,21 +87,60 @@ function importFromFile(file) {
 
 function loadGamesIntoMemory() {
     games = locateGames();
-    console.log(`Loaded ${games.length} games into memory`);
+}
+
+function renderGames() {
+    const container = document.getElementById('gameContainer');
+    container.innerHTML = '';
+    
+    for (let i = 0; i < games.length; i++) {
+        const game = games[i];
+        const gameDiv = document.createElement('div');
+        gameDiv.className = 'game-record';
+        gameDiv.innerHTML = `
+            <h2>${game.title}</h2>
+            <div class="game-details">
+                <div class="game-information">
+                    <p><strong>Designer:</strong> ${game.designer}</p>
+                    <p><strong>Artist:</strong> ${game.artist}</p>
+                    <p><strong>Publisher:</strong> ${game.publisher}</p>
+                    <p><strong>Year:</strong> ${game.year}</p>
+                    <p><strong>Players:</strong> ${game.players}</p>
+                    <p><strong>Play Time:</strong> ${game.time}</p>
+                    <p><strong>Difficulty:</strong> ${game.difficulty}</p>
+                    <p><a href="${game.url}" target="_blank">View on BoardGameGeek</a></p>
+                </div>
+                <div class="game-stats">
+                    <div class="play-counter">
+                        <p><strong>Play Count:</strong> <span class="play-count-value">${game.playCount}</span></p>
+                        <button class="play-button">+</button>
+                    </div>
+                    <div class="rating-section">
+                        <p><strong>Rating:</strong> <span class="rating-value">${game.personalRating}</span>/10</p>
+                        <input type="range" min="0" max="10" value="${game.personalRating}" class="rating-slider">
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(gameDiv);
+    }
 }
 
 export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON };
 
 if (typeof window !== 'undefined') {
-    loadGamesIntoMemory();
-    const importInput = document.getElementById('importSource');
-    if (importInput) {
-        importInput.addEventListener('change', function(event) {
-            if (event.target.files.length > 0) {
-                const file = event.target.files[0];
-                importFromFile(file);
-            }
-        });
-    }
-    console.log(`There are currently ${games.length} games in the memory:`, games);
+    document.addEventListener('DOMContentLoaded', function() {
+        loadGamesIntoMemory();
+        renderGames();
+        const importInput = document.getElementById('importSource');
+        if (importInput) {
+            importInput.addEventListener('change', function(event) {
+                if (event.target.files.length > 0) {
+                    const file = event.target.files[0];
+                    importFromFile(file);
+                }
+            });
+        }
+        console.log(`There are currently ${games.length} games in the memory:`, games);
+    });
 }
