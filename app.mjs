@@ -141,12 +141,61 @@ function renderGames() {
     }
 }
 
+function setupAddGameForm() {
+    const addGameForm = document.getElementById('addGameForm');
+    const ratingSlider = document.getElementById('gameRating');
+    const ratingDisplay = document.getElementById('ratingDisplay');
+
+    if (ratingSlider && ratingDisplay) {
+        ratingSlider.addEventListener('input', function() {
+            ratingDisplay.textContent = this.value;
+        });
+    }
+    
+    if (addGameForm) {
+        addGameForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('gameTitle').value.trim();
+            const designer = document.getElementById('gameDesigner').value.trim();
+            const artist = document.getElementById('gameArtist').value.trim();
+            const publisher = document.getElementById('gamePublisher').value.trim();
+            const year = parseInt(document.getElementById('gameYear').value);
+            const players = document.getElementById('gamePlayers').value.trim();
+            const time = document.getElementById('gameTime').value.trim();
+            const difficulty = document.getElementById('gameDifficulty').value;
+            const url = document.getElementById('gameURL').value.trim();
+            const personalRating = parseInt(document.getElementById('gameRating').value);
+            const newGame = new Game(
+                title,
+                designer,
+                artist,
+                publisher,
+                year,
+                players,
+                time,
+                difficulty,
+                url,
+                0,
+                personalRating
+            );
+            
+            saveGame(newGame);
+            renderGames();
+            addGameForm.reset();
+            ratingDisplay.textContent = "0";
+            alert(`Game "${title}" added`);
+        });
+    }
+}
+
 export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON, games };
 
 if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', function() {
         loadGamesIntoMemory();
         renderGames();
+        setupAddGameForm();
         const importInput = document.getElementById('importSource');
         if (importInput) {
             importInput.addEventListener('change', function(event) {
