@@ -98,7 +98,10 @@ function renderGames() {
         const gameDiv = document.createElement('div');
         gameDiv.className = 'game-record';
         gameDiv.innerHTML = `
-            <h2>${game.title}</h2>
+            <div class="game-header">
+                <h2>${game.title}</h2>
+                <button class="delete-button">Delete</button>
+            </div>
             <div class="game-details">
                 <div class="game-information">
                     <p><strong>Designer:</strong> ${game.designer}</p>
@@ -136,9 +139,27 @@ function renderGames() {
             gameDiv.querySelector('.rating-value').textContent = game.personalRating;
             saveGame(game);
         });
+
+        const deleteButton = gameDiv.querySelector('.delete-button');
+        deleteButton.addEventListener('click', function() {
+            if (confirm(`Do you want to delete "${game.title}"?`)) {
+                deleteGame(game.title);
+                renderGames();
+            }
+        });
         
         container.appendChild(gameDiv);
     }
+}
+
+function deleteGame(title) {
+    const key = `game_${title.replace(/\s+/g, '_')}`;
+    localStorage.removeItem(key);
+    const index = games.findIndex(game => game.title === title);
+    if (index !== -1) {
+        games.splice(index, 1);
+    }
+    return true;
 }
 
 function setupAddGameForm() {
@@ -189,7 +210,7 @@ function setupAddGameForm() {
     }
 }
 
-export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON, games };
+export { saveGame, locateGames, exportGamesAsJSON, importGamesFromJSON, deleteGame, games };
 
 if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', function() {
